@@ -1,0 +1,19 @@
+services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: aerzen-postventa-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-aerzen_chatbot}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      # Contraseña solo para desarrollo local. Define POSTGRES_PASSWORD en tu
+      # entorno (o en un .env no versionado) para usar otra distinta.
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+    ports:
+      # Escucha solo en loopback para no exponer la base de datos a la red local.
+      - "127.0.0.1:55432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:

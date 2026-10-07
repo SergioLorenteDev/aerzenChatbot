@@ -1,0 +1,45 @@
+/* Estilos exclusivos de la página de demostración: no forman parte del bundle
+   embebible, así que aquí sí se puede estilizar el documento. */
+body {
+  margin: 0;
+  background:
+    radial-gradient(circle at 18% 10%, rgba(91, 195, 220, 0.18), transparent 34%),
+    linear-gradient(180deg, #f4f8fb 0%, #dfeaf0 100%);
+}
+
+.demo-page {
+  position: relative;
+  min-height: 100vh;
+  background-position: center top;
+  background-repeat: no-repeat;
+  background-size: cover;
+  overflow: hidden;
+}
+
+.demo-page__overlay {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02)),
+    radial-gradient(circle at 82% 72%, rgba(8, 31, 56, 0.1), transparent 28%);
+  pointer-events: none;
+}
+
+.demo-page__widget-slot {
+  position: absolute;
+  right: 34px;
+  bottom: 28px;
+  z-index: 2;
+}
+
+@media (max-width: 900px) {
+  .demo-page {
+    background-position: 60% top;
+  }
+
+  .demo-page__widget-slot {
+    right: 12px;
+    left: 12px;
+    bottom: 12px;
+  }
+}

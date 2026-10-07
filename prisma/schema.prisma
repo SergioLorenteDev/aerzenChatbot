@@ -1,0 +1,152 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Region {
+  id        String     @id @default(cuid())
+  name      String     @unique
+  workers   Worker[]
+  customers Customer[]
+  machines  Machine[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
+
+model Worker {
+  id        String     @id @default(cuid())
+  name      String
+  email     String     @unique
+  telegramChatId String?
+  regions   Region[]
+  machines  Machine[]
+  incidents Incident[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
+
+model Customer {
+  id        String     @id @default(cuid())
+  name      String
+  externalCode String? @unique
+  email     String?
+  city      String?
+  regionId  String
+  region    Region     @relation(fields: [regionId], references: [id])
+  machines  Machine[]
+  technicalDataSheets TechnicalDataSheet[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
+
+model Machine {
+  id              String     @id @default(cuid())
+  model           String
+  serialNumber    String     @unique
+  fabricationCode String     @unique
+  equipmentNumber String?
+  installedAt     DateTime?
+  warrantyStart   DateTime?
+  warrantyEnd     DateTime?
+  customerId      String
+  regionId        String
+  assignedWorkerId String
+  technicalDataSheetId String?
+  customer        Customer   @relation(fields: [customerId], references: [id])
+  region          Region     @relation(fields: [regionId], references: [id])
+  assignedWorker  Worker     @relation(fields: [assignedWorkerId], references: [id])
+  technicalDataSheet TechnicalDataSheet? @relation(fields: [technicalDataSheetId], references: [id])
+  incidents       Incident[]
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+}
+
+model TechnicalDataSheet {
+  id               String   @id @default(cuid())
+  sourceName       String
+  title            String
+  model            String
+  typeCode         String
+  customerId       String?
+  customerCode     String?
+  customerName     String
+  customerCity     String?
+  sapOrderNumber   String?
+  sapOrderPosition String?
+  customerOrderNumber String?
+  language         String   @default("en")
+  rawSummary       String
+  operationCases   Json
+  inspectionData   Json?
+  sourceCapturedAt DateTime?
+  customer         Customer? @relation(fields: [customerId], references: [id])
+  machines         Machine[]
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+model Manual {
+  id          String   @id @default(cuid())
+  model       String   @unique
+  title       String
+  language    String   @default("es")
+  fileUrl     String
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model AuthorizedDocument {
+  id         String   @id @default(cuid())
+  title      String
+  model      String?
+  language   String   @default("es")
+  sourceUrl  String?
+  content    String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model Incident {
+  id               String   @id @default(cuid())
+  reference        String   @unique
+  sessionId        String
+  machineId        String?
+  serialNumber     String   @default("(no aportado)")
+  locality         String   @default("(no aportada)")
+  model            String
+  regionName       String?
+  assignedWorkerId String?
+  issueSummary     String
+  status           String   @default("mock_created")
+  telegramStatus   String?
+  telegramMessageId String?
+  machine          Machine? @relation(fields: [machineId], references: [id])
+  assignedWorker   Worker?  @relation(fields: [assignedWorkerId], references: [id])
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+model ConversationSession {
+  id           String                @id
+  currentState String
+  language     String               @default("es")
+  contextJson  Json
+  messages     ConversationMessage[]
+  createdAt    DateTime             @default(now())
+  updatedAt    DateTime             @updatedAt
+}
+
+model ConversationMessage {
+  id         String              @id @default(cuid())
+  sessionId  String
+  role       String
+  content    String
+  citations  Json?
+  createdAt  DateTime            @default(now())
+  session    ConversationSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+}

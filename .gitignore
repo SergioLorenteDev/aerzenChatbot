@@ -1,0 +1,29 @@
+node_modules
+dist
+.DS_Store
+coverage
+
+# Variables de entorno: nunca se sube el fichero real, pero la plantilla sí.
+.env
+.env.*
+!.env.example
+
+# Artefactos de compilación
+apps/widget/.vite
+apps/widget/dist
+apps/backend/dist
+
+# Base de datos local de desarrollo
+prisma/dev.db
+prisma/dev.db-journal
+
+# PDF de manuales y sus extractos: material con copyright que no debe publicarse
+fixtures/content/pdfs
+
+# Informes y trazas generados por los scripts (pueden contener datos operativos)
+reports/
+.playwright-mcp/
+
+# Recursos de trabajo sueltos que no forman parte del producto
+demo-widget-overlay.png
+logo-transparent-check.png
