@@ -71,8 +71,8 @@ docs/               screenshots used by this README
 You need Node.js 20 or newer and Docker, with ports `3001` (API) and `5173` (widget) free.
 
 ```bash
-npm install
-cp .env.example .env
+git clone https://github.com/SergioLorenteDev/aerzenChatbot.git && cd aerzenChatbot
+npm install && cp .env.example .env
 docker compose up -d
 npx prisma db push --schema prisma/schema.prisma && npm run prisma:seed
 npm run dev
